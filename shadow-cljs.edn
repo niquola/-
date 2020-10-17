@@ -1,0 +1,9 @@
+{:deps true
+ :builds {:app {:target :browser
+                :asset-path "/js"
+                :dev         {:modules    {:main {:entries [zen]}}
+                              :output-dir "resources/public/js"}
+                :devtools {:http-root   "resources/public"
+                           :http-port   3000}}}}
+
+

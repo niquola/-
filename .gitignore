@@ -1,0 +1,9 @@
+.nrepl-port
+node_modules/
+package-lock.json
+.shadow-cljs/
+target/
+resources/public/js/
+resources/public/css/
+jar-manifest
+.cpcache
