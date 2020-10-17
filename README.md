@@ -1,99 +1,48 @@
-# hix - An example front-end in Re-frame and CLJS
+# 禪
 
-This repo contains an example front-end application.
-Mainly for me to learn Re-frame.
+## 1. Reactive db
 
-This front-end is matched with the `hax` backend server.
+db is atom
+there are **views** - (aka re-frame subs)
+as a pure function of paths in db
 
-The pair `hix` and `hax` form a simple application that allows a new
-user to register for a service, and then allows users to login and
-logout.
-
-## Prequisites
-
-Note that these notes are for MacOS and `emacs` (with `cider` installed).
-
-1. Install node and sass
-
-```shell
-	brew install node
-	brew install sass
+```clj
+(defn my-sub 
+   {:z/paths 
+     {:user [:user], 
+      :data [:my :data]}
+    :z/subs 
+      {:osub #'other-sub}}
+   [state]
+   ......)
 ```
 
-2. Install shadow-cljs globally.
+There are db transaction effects like:
 
-```shell
-	npm install --global shadow-cljs
+:assoc-in :dissoc :update-in
+
+While zen applies transaction  - 
+it calculates which views may change and
+re-evaluate them.
+
+For example we do tx assoc :key and re-evaluate views 
+with paths [:key ...]
+
+# 2. render layer
+
+render is dumb - i.e. no calculations in render
+
+
+```clj
+(def my-page 
+ {z/views {:key #'view}
+  z/render
+  {:tag :div
+   :text :view/key
+   :on-click :view/key
+   :child {:when :view/key :html :v/key}
+   :if?
+   :for-each?
+   }
+)
 ```
-
-3. Make sure you are running `hax` before starting `hix` otherwise
-   `hix` will have nowhere to connect to.
-
-## Installation
-
-1. Clone this repo.
-
-```shell
-	git clone https://github.com/bombaywalla/hix.git
-```
-
-2. Set up node packages.
-
-```shell
-npm install --save
-```
-
-3. Run the `sass` processor to generate the CSS for `hix`.
-```shell
-	sass -I node_modules/bulma -I node_modules/bulma-pricingtable/dist/css \
-		resources/sass/hix.sass resources/public/css/hix.css
-```
-
-## Starting the hix app
-
-1. Make sure you are running `hax`.
-
-2. Start `emacs` and visit the `deps.edn` file.
-
-3. Fire up a cider cljs repl
-
-	`C-c C-x j s`
-
-4. Answer `y` when you are asked if you want to open a web browser.
-
-## Running tests
-
-```shell
-	$ shadow-cljs -A:test compile test
-	$ karma start --single-run
-```
-
-Expect some re-frame warnings about overwriting handlers.
-
-## Running production
-
-1. Run a report for the release build.
-
-```shell
-	npx shadow-cljs -A:prod run shadow.cljs.build-report app /tmp/report.html
-```
-
-2. Create a production release build.
-
-```shell
-	$ shadow-cljs -A:prod release app
-```
-
-## Credits
-
-I took inspiration and code from
-- <https://github.com/jacekschae/conduit>
-- <https://github.com/lambdaclass/holiday_ping>
-
-Please look at them as additional examples.
-
-## License
-
-Copyright © 2020 Dorab Patel
-
-Distributed under the MIT License.
